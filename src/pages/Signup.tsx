@@ -15,9 +15,7 @@ export const Signup = () => {
     console.log(password)
     
     await axios.post(BACKEND_URL + "/api/v1/signup", {
-      data: {
         username, password
-      }
     });
     alert("You have signed up!")
   }
