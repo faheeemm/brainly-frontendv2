@@ -3,11 +3,13 @@ import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { BACKEND_URL } from "../config";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const Signin = () => {
 
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
   
   async function Signin() {
     const username = usernameRef.current?.value;
@@ -22,6 +24,7 @@ export const Signin = () => {
     const jwt = response.data.token;
     localStorage.setItem("token", jwt);
     // TODO: Redirect the user to the dashboard
+    navigate("/dashboard");
   }
   
   return (
