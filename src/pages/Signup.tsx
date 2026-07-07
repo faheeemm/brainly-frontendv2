@@ -7,17 +7,18 @@ import axios from "axios";
 export const Signup = () => {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  
+
   async function signup() {
     const username = usernameRef.current?.value;
-    console.log(username)
+    console.log(username);
     const password = passwordRef.current?.value;
-    console.log(password)
-    
+    console.log(password);
+
     await axios.post(BACKEND_URL + "/api/v1/signup", {
-        username, password
+      username,
+      password,
     });
-    alert("You have signed up!")
+    alert("You have signed up!");
   }
 
   return (
