@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 import { CrossIcon } from "../icons/CrossIcon";
 import { Button } from "./Button";
@@ -9,13 +9,29 @@ interface CreateContentModalProps {
   onClose: () => void;
 }
 
+const ContentType = {
+  Youtube: "youtube",
+  Twitter: "twitter",
+} as const;
+type ContentType = (typeof ContentType)[keyof typeof ContentType];
+
 // controlled component. a modal will popup when user clicks on it.
-export const CreateContentModal = ({ open, onClose }: CreateContentModalProps) => {
-
+export const CreateContentModal = ({
+  open,
+  onClose,
+}: CreateContentModalProps) => {
   const modalRef = useRef<HTMLSpanElement>(null);
-
   useOutsideClick(modalRef, onClose);
-  
+
+  const titleRef = useRef<HTMLInputElement>(null);
+  const linkRef = useRef<HTMLInputElement>(null);
+
+  function addContent() {
+    const title = titleRef.current?.value;
+    const link = linkRef.current?.value;
+    const [type, setType] = useState<ContentType>(ContentType.Youtube);
+  }
+
   return (
     <div>
       {open && (
@@ -29,12 +45,33 @@ export const CreateContentModal = ({ open, onClose }: CreateContentModalProps) =
               </div>
 
               <div>
-                <Input placeholder={"Title"} />
-                <Input placeholder={"Link"} />
+                <Input ref={titleRef} placeholder={"Link"} />
+                <Input ref={linkRef} placeholder={"Title"} />
+              </div>
+
+              <div>
+                <Button
+                  text="Youtube"
+                  variant={
+                // @ts-ignore
+                    type === ContentType.Youtube ? "primary" : "secondary"
+                  } // ← dot, not comma
+                // @ts-ignore
+                  onClick={() => setType(ContentType.Youtube)}
+                />
+                <Button
+                  text="Twitter"
+                  variant={
+                // @ts-ignore
+                    type === ContentType.Youtube ? "primary" : "secondary"
+                  } // ← dot, not comma
+                // @ts-ignore
+                  onClick={() => setType(ContentType.Twitter)}
+                />
               </div>
 
               <div className="flex justify-center">
-                <Button variant="primary" text="Submit" />
+                <Button onClick={addContent} variant="primary" text="Submit" />
               </div>
             </span>
           </div>
@@ -43,5 +80,3 @@ export const CreateContentModal = ({ open, onClose }: CreateContentModalProps) =
     </div>
   );
 };
-
-
