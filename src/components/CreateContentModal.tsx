@@ -5,6 +5,7 @@ import { CrossIcon } from "../icons/CrossIcon";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { BACKEND_URL } from "../config";
+import { useContent } from "../hooks/useContent";
 
 interface CreateContentModalProps {
   open: boolean;
@@ -15,7 +16,7 @@ const ContentType = {
   Youtube: "youtube",
   Twitter: "twitter",
 } as const;
-type ContentType = (typeof ContentType)[keyof typeof ContentType];
+export type ContentType = (typeof ContentType)[keyof typeof ContentType];
 
 // controlled component. a modal will popup when user clicks on it.
 export const CreateContentModal = ({ open, onClose }: CreateContentModalProps) => {
@@ -26,10 +27,22 @@ export const CreateContentModal = ({ open, onClose }: CreateContentModalProps) =
   const linkRef = useRef<HTMLInputElement>(null);
   const [type, setType] = useState<ContentType>(ContentType.Youtube);
 
+  const { refresh, contents, setContents } = useContent()
+  
   function addContent() {
     const title = titleRef.current?.value;
     const link = linkRef.current?.value;
 
+    const newItem = {
+      _id: Date.now.toString(),
+      title: title || "",
+      link: link || "",
+      type
+    }
+    
+    setContents([...contents, newItem])
+    onClose();
+    
     axios.post(`${BACKEND_URL}/api/v1/content`, {
       link,
       title,
@@ -41,6 +54,7 @@ export const CreateContentModal = ({ open, onClose }: CreateContentModalProps) =
       },
     }).then(() => {
       onClose();
+      refresh()
     });
   }
 
